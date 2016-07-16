@@ -10,4 +10,5 @@ if [ "$?" -eq 0 ]; then
 echo -e "\e[1;31mFiles are succesfully uploaded to git repo"
 else
 echo -e "\e[1;31mWe are facing an issue while uploadin files to git repo\e[0m"
+exit 1
 fi
