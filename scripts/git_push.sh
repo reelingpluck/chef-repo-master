@@ -8,8 +8,8 @@ git pull origin test
 git push origin test
 
 if [ "$?" -eq 0 ]; then
-echo -e "\e[1;31mFiles are succesfully uploaded to git repo"
 git fetch && git log --name-status | grep $username
+echo -e "\e[1;31mFiles are succesfully uploaded to git repo"
 else
 echo -e "\e[1;31mWe are facing an issue while uploading files to git repo\e[0m"
 exit 1
