@@ -85,24 +85,18 @@ else
 echo $ssh_key > $WORKSPACE/$username.ssh
 fi
 
+json_validation_failure () {
+
+sed '/$email/d' $WORKSPACE/scripts/emails.sh > $WORKSPACE/scripts/emails.sh.new && mv $WORKSPACE/scripts/emails.sh.new $WORKSPACE/scripts/emails.sh
+rm -rf $WORKSPACE/data_bags/users/$username.json
+rm -rf $WORKSPACE/data_bags/private_keys/$username.json
+}
+
 echo "###########################################################"
 echo -e "\e[1;31mCreating the users json file\e[0m"
 IFS=$'\n' read -ra arr -d '' < $WORKSPACE/$username.sh
 source $WORKSPACE/scripts/test_user_add.sh "${arr[@]}"
 rm -rf $WORKSPACE/$username.sh
-
-#Please go through the below link to know more details about this section.
-#https://github.com/zaach/jsonlint
-
-echo "##########################################################"
-echo -e "\e[1;32mValidating the user json file syntax\e[0m"
-jsonlint $WORKSPACE/data_bags/users/$username.json
-if [ $? -eq 0 ]; then
-echo -e "\e[1;32mGenerated users file is in correct json format\e[0m"
-else
-echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
-exit 1
-fi
 
 echo "###########################################################"
 echo -e "\e[1;31mCreating the user private key json file syntax\e[0m"
@@ -123,6 +117,23 @@ IFS=$'\n' read -ra lines -d '' < $WORKSPACE/$username.private
 source $WORKSPACE/scripts/test_user_private_add.sh "${lines[@]}"
 rm -rf $username.private $username.ssh
 
+
+#Please go through the below link to know more details about this section.
+#https://github.com/zaach/jsonlint
+
+
+echo "##########################################################"
+echo -e "\e[1;32mValidating the user json file syntax\e[0m"
+jsonlint $WORKSPACE/data_bags/users/$username.json
+if [ $? -eq 0 ]; then
+echo -e "\e[1;32mGenerated users file is in correct json format\e[0m"
+else
+echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
+json_validation_failure
+exit 1
+fi
+
+
 echo "#############################################################"
 echo -e "\e[1;32mValidating the  user private key json file syntax\e[0m"
 jsonlint $WORKSPACE/data_bags/private_keys/$username.json
@@ -130,6 +141,7 @@ if [ $? -eq 0 ]; then
 echo -e "\e[1;32mGenerated users file is in correct json format\e[0m"
 else
 echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
+json_validation_failure
 exit 1
 fi
 
