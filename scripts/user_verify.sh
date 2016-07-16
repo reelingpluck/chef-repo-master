@@ -86,8 +86,7 @@ echo $ssh_key > $WORKSPACE/$username.ssh
 fi
 
 json_validation_failure () {
-
-sed '/$email/d' $WORKSPACE/scripts/emails.sh > $WORKSPACE/scripts/emails.sh.new && mv $WORKSPACE/scripts/emails.sh.new $WORKSPACE/scripts/emails.sh
+grep -wv "$email"  $WORKSPACE/scripts/emails.sh > $WORKSPACE/scripts/emails.sh.new && mv $WORKSPACE/scripts/emails.sh.new $WORKSPACE/scripts/emails.sh
 rm -rf $WORKSPACE/data_bags/users/$username.json
 rm -rf $WORKSPACE/data_bags/private_keys/$username.json
 }
