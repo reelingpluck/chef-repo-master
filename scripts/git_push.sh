@@ -1,5 +1,4 @@
 #echo "############################################"
-#Before you run this script you need to execute the following commands to have a smooth and succesful upload. git ls-remote -h <remote url> <refs> and git config --global user.name and user.mail this will add the required initial info for git to understand.
 echo -e "\e[1;31mPushing the json files to git repo\e[0m"
 git checkout test
 git status
