@@ -1,0 +1,13 @@
+{
+  "id": "anu",
+  "uid": "2",
+  "groups": [
+    "company",
+    "users"
+  ],
+  "shell": "/bin/bash",
+  "home_dir": "/home/anu",
+  "comment": "anusha",
+  "ssh_keys": "",
+  "action": "none"
+}
