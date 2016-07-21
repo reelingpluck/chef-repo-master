@@ -14,6 +14,13 @@ echo "#######################" >> $WORKSPACE/scripts/mail_content
 knife vault show private_keys $username >> $WORKSPACE/scripts/mail_content
 }
 
+mail_content_temp () {
+echo -e "\e[1;31mPlease check the details of the $fullname\e[0m"
+knife data bag show users $username 
+echo "#######################"
+knife vault show private_keys $username 
+}
+
 if [ -f $WORKSPACE/data_bags/users/$username.json ]; then
 echo -e "\e[1;31m Creating the user data bag item for $username\e[0m"
 knife data bag from file users $WORKSPACE/data_bags/users/$username.json
@@ -31,7 +38,7 @@ exit 1
 fi
 
 sleep 10
-mail_content
+mail_content_temp
 
 echo -e "\e[1;32mThank you\e[0m"
 
