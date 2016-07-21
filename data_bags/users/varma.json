@@ -1,0 +1,13 @@
+{
+  "id": "varma",
+  "uid": "8",
+  "groups": [
+    "movies",
+    "users"
+  ],
+  "shell": "/bin/bash",
+  "home_dir": "/home/varma",
+  "comment": "ram gopam varma",
+  "ssh_keys": "",
+  "action": "none"
+}
