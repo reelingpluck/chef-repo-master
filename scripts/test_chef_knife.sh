@@ -8,10 +8,10 @@ knife ssl fetch
 sleep 5
 
 mail_content () {
-echo "Please check the details of the $fullname" > $WORKSPACE/scripts/mail_content.sh
-knife data bag show users $username >> $WORKSPACE/scripts/mail_content.sh
-echo "#######################" >> $WORKSPACE/scripts/mail_content.sh
-knife vault show private_keys $username >> $WORKSPACE/scripts/mail_content.sh
+echo "Please check the details of the $fullname" > $WORKSPACE/scripts/mail_content
+knife data bag show users $username >> $WORKSPACE/scripts/mail_content
+echo "#######################" >> $WORKSPACE/scripts/mail_content
+knife vault show private_keys $username >> $WORKSPACE/scripts/mail_content
 }
 
 if [ -f $WORKSPACE/data_bags/users/$username.json ]; then
