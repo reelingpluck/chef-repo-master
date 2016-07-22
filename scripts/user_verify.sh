@@ -13,9 +13,9 @@ echo "#######################################################################"
 
 #This verify_email section will map the users name with mail id's to avoid the duplicate entries in future.
 verify_email () {
-prefix=$( echo "$email" | cut -d '@' -f2 )
+suffix=$( echo "$email" | cut -d '@' -f2 )
 #echo "$prefix"
-if [[ "$prefix" == "itaas.com" || "$prefix" == "dimensiondata.com" || "$prefix" == "itaas.dimensiondata.com" ]]; then
+if [[ "$suffix" == "itaas.com" || "$suffix" == "dimensiondata.com" || "$suffix" == "itaas.dimensiondata.com" ]]; then
 echo "You have provided the offical mail id"
 else
 echo -e "\e[1;31myour maild is not in the correct format, Please provide your offical mail id\e[0m"
