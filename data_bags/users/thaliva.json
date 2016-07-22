@@ -1,0 +1,13 @@
+{
+  "id": "thaliva",
+  "uid": "10",
+  "groups": [
+    "movies",
+    "users"
+  ],
+  "shell": "/bin/bash",
+  "home_dir": "/home/thaliva",
+  "comment": "rajinikanth",
+  "ssh_keys": "",
+  "action": "none"
+}

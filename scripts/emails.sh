@@ -6,3 +6,4 @@ kabali:kabali@itaas.com
 rajinisir:rajini@itaas.com
 varma:varma@itaas.com
 kabalida:kabalida@itaas.com
+thaliva:thaliva@itaas.com
