@@ -8,3 +8,4 @@ varma:varma@itaas.com
 kabalida:kabalida@itaas.com
 thaliva:thaliva@itaas.com
 enarciso:enarciso@itaas.com
+vijayd:vijay@itaas.com
