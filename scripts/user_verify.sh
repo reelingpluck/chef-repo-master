@@ -83,12 +83,13 @@ echo -e "\033[1;31mPlease provide the ssh_key\e[0m"
 exit 1
 else 
 echo $ssh_key > $WORKSPACE/$username.ssh
+echo $fullname >> $WORKSPACE/$username.sh
 fi
 
-json_validation_failure () {
+validation_failure () {
 grep -wv "$email"  $WORKSPACE/scripts/emails.sh > $WORKSPACE/scripts/emails.sh.new && mv $WORKSPACE/scripts/emails.sh.new $WORKSPACE/scripts/emails.sh
 rm -rf $WORKSPACE/data_bags/users/$username.json
-rm -rf $WORKSPACE/data_bags/private_keys/$username.json
+rm -rf $WORKSPACE/data_bags/private_keys/$username.yaml
 }
 
 echo "###########################################################"
@@ -97,8 +98,6 @@ IFS=$'\n' read -ra arr -d '' < $WORKSPACE/$username.sh
 source $WORKSPACE/scripts/test_user_add.sh "${arr[@]}"
 rm -rf $WORKSPACE/$username.sh
 
-echo "###########################################################"
-echo -e "\e[1;31mCreating the user private key json file syntax\e[0m"
 
 private_key_json () {
 echo $username > $WORKSPACE/$username.private
@@ -111,11 +110,44 @@ cat $WORKSPACE/$username.ssh >> $WORKSPACE/$username.private
 }
 private_key_json
 
-IFS=$'\n' read -ra lines -d '' < $WORKSPACE/$username.private
-#source reddy.sh $arguments
-source $WORKSPACE/scripts/test_user_private_add.sh "${lines[@]}"
-rm -rf $username.private $username.ssh
+ops_user_update () {
+cat $WORKSPACE/data_bags/private_keys/$username.yaml >> $WORKSPACE/data_bags/private_keys/ops_users_new.yaml 
+rm -rf $WORKSPACE/data_bags/private_keys/$username.yaml
+yaml-lint $WORKSPACE/data_bags/private_keys/ops_users_new.yaml
+if [ $? -eq 0 ]; then
+cp $WORKSPACE/data_bags/private_keys/ops_users.json $WORKSPACE/data_bags/private_keys/ops_users_bkp.json && rm -rf $WORKSPACE/data_bags/private_keys/ops_users.json
+yaml2json $WORKSPACE/data_bags/private_keys/ops_users_new.yaml > $WORKSPACE/data_bags/private_keys/ops_users.json
+jsonlint $WORKSPACE/data_bags/private_keys/ops_users.json
+if [ $? -eq 0 ]; then
+echo -e "\e[1;32mops_users file is successfully updated\e[0m"
+else
+echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
+exit 1
+fi
+else
+echo -e "\e[1;31mFile is not in valid yaml format, please check\e[0m"
+exit 1
+fi
+}
 
+#Temprorily disbaling this feature as we are only editing the ops_users file by not creating individual private keys for users 
+#echo "###########################################################"
+#echo -e "\e[1;31mCreating the user private key json file syntax\e[0m"
+
+#IFS=$'\n' read -ra lines -d '' < $WORKSPACE/$username.private
+#source $WORKSPACE/scripts/test_user_private_add.sh "${lines[@]}"
+#rm -rf $username.private $username.ssh
+
+#echo "#############################################################"
+#echo -e "\e[1;32mValidating the  user private key json file syntax\e[0m"
+#jsonlint $WORKSPACE/data_bags/private_keys/$username.json
+#if [ $? -eq 0 ]; then
+#echo -e "\e[1;32mGenerated users file is in correct json format\e[0m"
+#else
+#echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
+#json_validation_failure
+#exit 1
+#fi
 
 #Please go through the below link to know more details about this section.
 #https://github.com/zaach/jsonlint
@@ -128,19 +160,26 @@ if [ $? -eq 0 ]; then
 echo -e "\e[1;32mGenerated users file is in correct json format\e[0m"
 else
 echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
-json_validation_failure
+validation_failure
 exit 1
 fi
 
+echo "###########################################################"
+echo -e "\e[1;31mCreating the user private key yaml file syntax\e[0m"
 
-echo "#############################################################"
-echo -e "\e[1;32mValidating the  user private key json file syntax\e[0m"
-jsonlint $WORKSPACE/data_bags/private_keys/$username.json
+IFS=$'\n' read -ra lines -d '' < $WORKSPACE/$username.private
+source $WORKSPACE/scripts/test_user_yaml.sh "${lines[@]}"
+rm -rf $username.private $username.ssh
+
+echo -e "\e[1;32mValidating the  user private key yaml file syntax\e[0m"
+yaml-lint $WORKSPACE/data_bags/private_keys/$username.yaml
 if [ $? -eq 0 ]; then
-echo -e "\e[1;32mGenerated users file is in correct json format\e[0m"
+echo -e "\e[1;32mGenerated users file is in correct yaml format\e[0m"
 else
-echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
-json_validation_failure
+echo -e "\e[1;31mFile is not in valid yaml format, please check\e[0m"
+validation_failure
 exit 1
 fi
 
+echo -e "\e[1;32mUpdating the ops_users file\e[0m"
+ops_user_update
