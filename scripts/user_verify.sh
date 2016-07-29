@@ -123,14 +123,16 @@ private_key_json
 
 ops_user_update () {
 cat $WORKSPACE/data_bags/private_keys/$username.yaml >> $WORKSPACE/data_bags/private_keys/ops_users_new.yaml 
-rm -rf $WORKSPACE/data_bags/private_keys/$username.yaml
 yaml-lint $WORKSPACE/data_bags/private_keys/ops_users_new.yaml
 if [ $? -eq 0 ]; then
 cp $WORKSPACE/data_bags/private_keys/ops_users.json $WORKSPACE/data_bags/private_keys/ops_users_bkp.json && rm -rf $WORKSPACE/data_bags/private_keys/ops_users.json
 yaml2json $WORKSPACE/data_bags/private_keys/ops_users_new.yaml > $WORKSPACE/data_bags/private_keys/ops_users.json
-jsonlint $WORKSPACE/data_bags/private_keys/ops_users.json
+jsonlint $WORKSPACE/data_bags/private_keys/ops_users.json > /dev/null
 if [ $? -eq 0 ]; then
-echo -e "\e[1;32mops_users file is successfully updated\e[0m"
+echo -e "\e[1;32mops_users file is successfully updated and please check the contents of the $fullname\e[0m"
+jsonlint $WORKSPACE/data_bags/users/$username.json
+cat $WORKSPACE/data_bags/private_keys/$username.yaml
+rm -rf $WORKSPACE/data_bags/private_keys/$username.yaml
 else
 echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
 exit 1
