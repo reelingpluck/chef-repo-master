@@ -83,7 +83,7 @@ echo -e "\033[1;31mPlease provide the ssh_key\e[0m"
 exit 1
 else 
 echo $ssh_key > $WORKSPACE/$username.ssh
-echo $fullname >> $WORKSPACE/$username.sh
+echo $ssh_key >> $WORKSPACE/$username.sh
 fi
 
 validation_failure () {
@@ -97,6 +97,17 @@ echo -e "\e[1;31mCreating the users json file\e[0m"
 IFS=$'\n' read -ra arr -d '' < $WORKSPACE/$username.sh
 source $WORKSPACE/scripts/test_user_add.sh "${arr[@]}"
 rm -rf $WORKSPACE/$username.sh
+
+echo "##########################################################"
+echo -e "\e[1;32mValidating the user json file syntax\e[0m"
+jsonlint $WORKSPACE/data_bags/users/$username.json
+if [ $? -eq 0 ]; then
+echo -e "\e[1;32mGenerated users file is in correct json format\e[0m"
+else
+echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
+validation_failure
+exit 1
+fi
 
 
 private_key_json () {
@@ -152,18 +163,6 @@ fi
 #Please go through the below link to know more details about this section.
 #https://github.com/zaach/jsonlint
 
-
-echo "##########################################################"
-echo -e "\e[1;32mValidating the user json file syntax\e[0m"
-jsonlint $WORKSPACE/data_bags/users/$username.json
-if [ $? -eq 0 ]; then
-echo -e "\e[1;32mGenerated users file is in correct json format\e[0m"
-else
-echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
-validation_failure
-exit 1
-fi
-
 echo "###########################################################"
 echo -e "\e[1;31mCreating the user private key yaml file syntax\e[0m"
 
@@ -175,11 +174,9 @@ echo -e "\e[1;32mValidating the  user private key yaml file syntax\e[0m"
 yaml-lint $WORKSPACE/data_bags/private_keys/$username.yaml
 if [ $? -eq 0 ]; then
 echo -e "\e[1;32mGenerated users file is in correct yaml format\e[0m"
+ops_user_update
 else
 echo -e "\e[1;31mFile is not in valid yaml format, please check\e[0m"
 validation_failure
 exit 1
 fi
-
-echo -e "\e[1;32mUpdating the ops_users file\e[0m"
-ops_user_update
