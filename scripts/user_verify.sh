@@ -131,6 +131,7 @@ jsonlint $WORKSPACE/data_bags/private_keys/ops_users.json > /dev/null
 if [ $? -eq 0 ]; then
 echo -e "\e[1;32mops_users file is successfully updated and please check the contents of the $fullname\e[0m"
 jsonlint $WORKSPACE/data_bags/users/$username.json
+echo "###########################################"
 cat $WORKSPACE/data_bags/private_keys/$username.yaml
 rm -rf $WORKSPACE/data_bags/private_keys/$username.yaml
 else
