@@ -25,10 +25,10 @@ fi
 echo -e "\e[1;31mVerifying the maild id\e[0m"
 verify_email
 get_user () {
-grep -w $email < $WORKSPACE/scripts/emails.sh | cut -d ':' -f1
+grep -w $email < data/emails.sh | cut -d ':' -f1
 }
 current_user=$( get_user )
-grep $email $WORKSPACE/scripts/emails.sh > /dev/null    
+grep $email data/emails.sh > /dev/null    
 if [ $? -eq 0 ]; then
 echo -e "\e[1;31mMailid $email is already exists with the $current_user\e[0m"
 exit 1
@@ -36,50 +36,50 @@ fi
 if [ "$username" == "" ]; then
 echo -e "\033[1;31mPlease provide the username\e[0m"
 exit 1
-elif [ -f $WORKSPACE/data_bags/users/$username.json ]; then
+elif [ -f data_bags/users/$username.json ]; then
 echo -e "\e[1;31mFile already exists\e[0m"
 exit 1
 else
-echo $username > $WORKSPACE/$username.sh
-echo "$username:$email" >> $WORKSPACE/scripts/emails.sh
+echo $username > $username.sh
+echo "$username:$email" >> data/emails.sh
 fi
 if [ "$fullname" == "" ]; then
 echo -e "\033[1;31mPlease provide the fullname\e[0m"
 exit 1
 else
-echo $fullname >> $WORKSPACE/$username.sh
+echo $fullname >> $username.sh
 fi
 highest_uid () {
-  grep "uid" $WORKSPACE/data_bags/users/*.json |awk '{print $3}' |sort -n |awk  END{print} |cut -d, -f1 |tr -d '"'
+  grep "uid" data_bags/users/*.json |awk '{print $3}' |sort -n |awk  END{print} |cut -d, -f1 |tr -d '"'
 }
 current_user_uid=$[`highest_uid`+1]
-echo $current_user_uid >> $WORKSPACE/$username.sh
+echo $current_user_uid >> $username.sh
 if [ "$group" == "" ]; then
 echo -e "\033[1;31mPlease provide the groupname\e[0m"
 exit 1
 else
-echo $group >> $WORKSPACE/$username.sh
+echo $group >> $username.sh
 fi
 if [ "$ssh_key" == "" ]; then
 echo -e "\033[1;31mPlease provide the ssh_key\e[0m"
 exit 1
 else 
-echo $ssh_key > $WORKSPACE/$username.ssh
-echo $ssh_key >> $WORKSPACE/$username.sh
+echo $ssh_key > $username.ssh
+echo $ssh_key >> $username.sh
 fi
 validation_failure () {
-grep -wv "$email"  $WORKSPACE/scripts/emails.sh > $WORKSPACE/scripts/emails.sh.new && mv $WORKSPACE/scripts/emails.sh.new $WORKSPACE/scripts/emails.sh
-rm -rf $WORKSPACE/data_bags/users/$username.json
-rm -rf $WORKSPACE/data_bags/private_keys/$username.yaml
+grep -wv "$email"  data/emails.sh > data/emails.sh.new && mv data/emails.sh.new data/emails.sh
+rm -rf data_bags/users/$username.json
+rm -rf data_bags/private_keys/$username.yaml
 }
 echo "###########################################################"
 echo -e "\e[1;31mCreating the users json file\e[0m"
-IFS=$'\n' read -ra arr -d '' < $WORKSPACE/$username.sh
-source $WORKSPACE/scripts/test_user_add.sh "${arr[@]}"
-rm -rf $WORKSPACE/$username.sh
+IFS=$'\n' read -ra arr -d '' < $username.sh
+source scripts/test_user_add.sh "${arr[@]}"
+rm -rf $username.sh
 echo "##########################################################"
 echo -e "\e[1;32mValidating the user json file syntax\e[0m"
-jsonlint $WORKSPACE/data_bags/users/$username.json
+jsonlint data_bags/users/$username.json
 if [ $? -eq 0 ]; then
 echo -e "\e[1;32mGenerated users file is in correct json format\e[0m"
 else
@@ -88,26 +88,26 @@ validation_failure
 exit 1
 fi
 private_key_json () {
-echo $username > $WORKSPACE/$username.private
-cat $WORKSPACE/$username.ssh | md5sum > $WORKSPACE/$username.md5
-cut -d ' ' -f1 < $WORKSPACE/$username.md5 >> $WORKSPACE/$username.private
-rm -rf $WORKSPACE/$username.md5
-cat $WORKSPACE/$username.ssh >> $WORKSPACE/$username.private
+echo $username > $username.private
+cat $username.ssh | md5sum > $username.md5
+cut -d ' ' -f1 < $username.md5 >> $username.private
+rm -rf $username.md5
+cat $username.ssh >> $username.private
 }
 private_key_json
 ops_user_update () {
-cat $WORKSPACE/data_bags/private_keys/$username.yaml >> $WORKSPACE/data_bags/private_keys/ops_users_new.yaml 
-yaml-lint $WORKSPACE/data_bags/private_keys/ops_users_new.yaml
+cat data/$username.yaml >> data/ops_users_new.yaml 
+yaml-lint data/ops_users_new.yaml
 if [ $? -eq 0 ]; then
-cp $WORKSPACE/data_bags/private_keys/ops_users.json $WORKSPACE/data_bags/private_keys/ops_users_bkp.json && rm -rf $WORKSPACE/data_bags/private_keys/ops_users.json
-yaml2json $WORKSPACE/data_bags/private_keys/ops_users_new.yaml > $WORKSPACE/data_bags/private_keys/ops_users.json
-jsonlint $WORKSPACE/data_bags/private_keys/ops_users.json > /dev/null
+cp data_bags/private_keys/ops_users.json data/ops_users_bkp.json && rm -rf data_bags/private_keys/ops_users.json
+yaml2json data/ops_users_new.yaml > data_bags/private_keys/ops_users.json
+jsonlint data_bags/private_keys/ops_users.json > /dev/null
 if [ $? -eq 0 ]; then
 echo -e "\e[1;32mops_users file is successfully updated and please check the contents of the $fullname\e[0m"
-jsonlint $WORKSPACE/data_bags/users/$username.json
+jsonlint data_bags/users/$username.json
 echo "###########################################"
-cat $WORKSPACE/data_bags/private_keys/$username.yaml
-rm -rf $WORKSPACE/data_bags/private_keys/$username.yaml
+cat data/$username.yaml
+rm -rf data/$username.yaml
 else
 echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
 exit 1
@@ -119,11 +119,11 @@ fi
 }
 echo "###########################################################"
 echo -e "\e[1;31mCreating the user private key yaml file syntax\e[0m"
-IFS=$'\n' read -ra lines -d '' < $WORKSPACE/$username.private
-source $WORKSPACE/scripts/test_user_yaml.sh "${lines[@]}"
+IFS=$'\n' read -ra lines -d '' < /$username.private
+source scripts/test_user_yaml.sh "${lines[@]}"
 rm -rf $username.private $username.ssh
 echo -e "\e[1;32mValidating the  user private key yaml file syntax\e[0m"
-yaml-lint $WORKSPACE/data_bags/private_keys/$username.yaml
+yaml-lint data/$username.yaml
 if [ $? -eq 0 ]; then
 echo -e "\e[1;32mGenerated users file is in correct yaml format\e[0m"
 ops_user_update

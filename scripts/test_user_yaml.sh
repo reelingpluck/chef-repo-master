@@ -1,4 +1,4 @@
-cat << EOF > $WORKSPACE/data_bags/private_keys/$1.yaml
+cat << EOF > data/$1.yaml
   $1:
     passwordclear: ""
     passwordmd5: "$2"

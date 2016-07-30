@@ -1,4 +1,4 @@
-cat << EOF > $WORKSPACE/data_bags/users/$1.json
+cat << EOF > data_bags/users/$1.json
 {
   "id": "$1",
   "uid": "$3",

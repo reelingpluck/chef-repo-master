@@ -1,4 +1,4 @@
-cat << EOF > $WORKSPACE/data_bags/private_keys/$1.json
+cat << EOF > data_bags/private_keys/$1.json
 {
   "id": "$1",
     "passwordclear": "",
