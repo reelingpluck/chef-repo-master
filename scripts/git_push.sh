@@ -1,11 +1,11 @@
 #echo "############################################"
 echo -e "\e[1;31mPushing the json files to git repo\e[0m"
-git checkout develop
+git checkout test
 git status
 git add .
 git commit -m "Uploading the users and private_keys json files of user $username"
-git pull origin develop
-git push origin develop
+git pull origin test
+git push origin test
 
 if [ "$?" -eq 0 ]; then
 git fetch && git log --name-status | grep $username
