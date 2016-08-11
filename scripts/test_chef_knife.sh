@@ -11,7 +11,7 @@ mail_content () {
 echo "Please check the details of the $fullname" > data/mail_content
 knife data bag show users $username >> data/mail_content
 echo "#######################" >> data/mail_content
-knife vault show private_keys ops_users | grep -A 3 $username >> data/mail_content
+knife vault show private_keys ops_users_temp | grep -A 3 $username >> data/mail_content
 }
 
 
@@ -23,9 +23,9 @@ echo -e "\e[1;31mUsers json file is not found, please recheck\e[0m"
 exit 1
 fi
 
-if [ -f data_bags/private_keys/ops_users.json ]; then
+if [ -f data_bags/private_keys/ops_users_temp.json ]; then
 echo -e "\e[1;31m Updating the ops_users file for user $username\e[0m"
-knife vault update private_keys ops_users -A ngupta -M client -S "os:linux" -j data_bags/private_keys/ops_users.json
+knife vault update private_keys ops_users_temp -A ngupta -M client -S "os:linux" -j data_bags/private_keys/ops_users_temp.json
 else
 echo -e "\e[1;31mPrivate_key json file is not found, please recheck\e[0m"
 exit 1
