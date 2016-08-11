@@ -18,3 +18,4 @@ ritu143:ritu@itaas.com
 xyz:xyz@itaas.com
 abc:abc@itaas.com
 kriti:kriti@itaas.com
+taken:taken@itaas.com
