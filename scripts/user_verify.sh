@@ -119,7 +119,7 @@ fi
 }
 echo "###########################################################"
 echo -e "\e[1;31mCreating the user private key yaml file syntax\e[0m"
-IFS=$'\n' read -ra lines -d '' < /$username.private
+IFS=$'\n' read -ra lines -d '' < $username.private
 source scripts/test_user_yaml.sh "${lines[@]}"
 rm -rf $username.private $username.ssh
 echo -e "\e[1;32mValidating the  user private key yaml file syntax\e[0m"
