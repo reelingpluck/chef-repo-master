@@ -102,7 +102,7 @@ yaml-lint data/ops_users_new.yaml
 if [ $? -eq 0 ]; then
 cp data_bags/private_keys/ops_users.json data/ops_users_bkp.json && rm -rf data_bags/private_keys/ops_users.json
 yaml2json data/ops_users_new.yaml > data_bags/private_keys/ops_users.json
-cp data_bags/private_keys/ops_users.json data_bags/private_keys/ops_users_temp.json
+cp data_bags/private_keys/ops_users.json data_bags/private_keys/ops_users_temp.json && sed -i 's/ops_users/ops_users_temp/g' data_bags/private_keys/ops_users_temp.json
 jsonlint data_bags/private_keys/ops_users.json > /dev/null
 if [ $? -eq 0 ]; then
 echo -e "\e[1;32mops_users file is successfully updated and please check the contents of the $fullname\e[0m"
