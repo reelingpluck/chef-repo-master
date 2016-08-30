@@ -1,73 +1,7 @@
 #!/bin/bash
 #This script checks the existing and new users information and execute the tasks based upon the conditions.This script will create the json files and validate tje syntax also.
 rm -rf data_bags/private_keys/ops_users_temp.json
-echo "#######################################################################"
-echo  -e "\e[1;31mPlease check the details provided\e[0m"
-echo  -e "Your username is \e[1;34m$username\e[0m"
-echo -e "Your Fullname is \e[1;33m$fullname\e[0m"
-echo  -e "Your emailid is \e[1;32m$email\e[0m"
-echo  -e "Your group name is \e[1;36m$group\e[0m"
-echo  -e "Your ssh_key is \e[1;34m$ssh_key\e[0m"
-echo "#######################################################################"
-#This verify_email section will map the users name with mail id's to avoid the duplicate entries in future.
-verify_email () {
-suffix=$( echo "$email" | cut -d '@' -f2 )
-if [[ "$suffix" == "itaas.com" || "$suffix" == "dimensiondata.com" || "$suffix" == "itaas.dimensiondata.com" ]]; then
-echo "You have provided the offical mail id"
-else
-echo -e "\e[1;31myour maild is not in the correct format, Please provide your offical mail id\e[0m"
-exit 1
-fi
-}
-if [ "$email" == "" ]; then
-echo -e "\033[1;31mPlease provide the email\e[0m"
-exit 1
-fi
-echo -e "\e[1;31mVerifying the maild id\e[0m"
-verify_email
-get_user () {
-grep -w $email < data/emails.sh | cut -d ':' -f1
-}
-current_user=$( get_user )
-grep $email data/emails.sh > /dev/null    
-if [ $? -eq 0 ]; then
-echo -e "\e[1;31mMailid $email is already exists with the $current_user\e[0m"
-exit 1
-fi
-if [ "$username" == "" ]; then
-echo -e "\033[1;31mPlease provide the username\e[0m"
-exit 1
-elif [ -f data_bags/users/$username.json ]; then
-echo -e "\e[1;31mFile already exists\e[0m"
-exit 1
-else
-echo $username > $username.sh
-echo "$username:$email" >> data/emails.sh
-fi
-if [ "$fullname" == "" ]; then
-echo -e "\033[1;31mPlease provide the fullname\e[0m"
-exit 1
-else
-echo $fullname >> $username.sh
-fi
-highest_uid () {
-  grep "uid" data_bags/users/*.json |awk '{print $3}' |sort -n |awk  END{print} |cut -d, -f1 |tr -d '"'
-}
-current_user_uid=$[`highest_uid`+1]
-echo $current_user_uid >> $username.sh
-if [ "$group" == "" ]; then
-echo -e "\033[1;31mPlease provide the groupname\e[0m"
-exit 1
-else
-echo $group >> $username.sh
-fi
-if [ "$ssh_key" == "" ]; then
-echo -e "\033[1;31mPlease provide the ssh_key\e[0m"
-exit 1
-else 
-echo $ssh_key > $username.ssh
-echo $ssh_key >> $username.sh
-fi
+rm -rf $username.temp/$username.html
 validation_failure () {
 grep -wv "$email"  data/emails.sh > data/emails.sh.new && mv data/emails.sh.new data/emails.sh
 rm -rf data_bags/users/$username.json
@@ -75,9 +9,9 @@ rm -rf data_bags/private_keys/$username.yaml
 }
 echo "###########################################################"
 echo -e "\e[1;31mCreating the users json file\e[0m"
-IFS=$'\n' read -ra arr -d '' < $username.sh
+IFS=$'\n' read -ra arr -d '' < $username.temp/$username.sh
 source scripts/test_user_add.sh "${arr[@]}"
-rm -rf $username.sh
+rm -rf $username.temp/$username.sh
 echo "##########################################################"
 echo -e "\e[1;32mValidating the user json file syntax\e[0m"
 jsonlint data_bags/users/$username.json
@@ -89,11 +23,11 @@ validation_failure
 exit 1
 fi
 private_key_json () {
-echo $username > $username.private
-cat $username.ssh | md5sum > $username.md5
-cut -d ' ' -f1 < $username.md5 >> $username.private
-rm -rf $username.md5
-cat $username.ssh >> $username.private
+echo $username > $username.temp/$username.private
+cat $username.temp/$username.ssh | md5sum > $username.temp/$username.md5
+cut -d ' ' -f1 < $username.temp/$username.md5 >> $username.temp/$username.private
+rm -rf $username.temp/$username.md5
+cat $username.temp/$username.ssh >> $username.temp/$username.private
 }
 private_key_json
 ops_user_update () {
@@ -121,9 +55,9 @@ fi
 }
 echo "###########################################################"
 echo -e "\e[1;31mCreating the user private key yaml file syntax\e[0m"
-IFS=$'\n' read -ra lines -d '' < $username.private
+IFS=$'\n' read -ra lines -d '' < $username.temp/$username.private
 source scripts/test_user_yaml.sh "${lines[@]}"
-rm -rf $username.private $username.ssh
+rm -rf $username.temp/$username.private $username.temp/$username.ssh
 echo -e "\e[1;32mValidating the  user private key yaml file syntax\e[0m"
 yaml-lint data/$username.yaml
 if [ $? -eq 0 ]; then

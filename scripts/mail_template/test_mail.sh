@@ -39,39 +39,40 @@ elif [ -f data_bags/users/$username.json ]; then
 echo -e "\e[1;31mFile already exists\e[0m"
 exit 1
 else
-echo $username > $username.sh
-echo $username > $username.content
+mkdir $username.temp
+echo $username > $username.temp/$username.sh
+echo $username > $username.temp/$username.content
 echo "$username:$email" >> data/emails.sh
 fi
 if [ "$fullname" == "" ]; then
 echo -e "\033[1;31mPlease provide the fullname\e[0m"
 exit 1
 else
-echo $fullname >> $username.sh
-echo $fullname >> $username.content
-echo $email >> $username.content
+echo $fullname >> $username.temp/$username.sh
+echo $fullname >> $username.temp/$username.content
+echo $email >> $username.temp/$username.content
 fi
 highest_uid () {
   grep "uid" data_bags/users/*.json |awk '{print $3}' |sort -n |awk  END{print} |cut -d, -f1 |tr -d '"'
 }
 current_user_uid=$[`highest_uid`+1]
-echo $current_user_uid >> $username.sh
+echo $current_user_uid >> $username.temp/$username.sh
 if [ "$group" == "" ]; then
 echo -e "\033[1;31mPlease provide the groupname\e[0m"
 exit 1
 else
-echo $group >> $username.sh
-echo $group >> $username.content
+echo $group >> $username.temp/$username.sh
+echo $group >> $username.temp/$username.content
 fi
 if [ "$ssh_key" == "" ]; then
 echo -e "\033[1;31mPlease provide the ssh_key\e[0m"
 exit 1
 else
-echo $ssh_key > $username.ssh
-echo $ssh_key >> $username.sh
-echo $ssh_key >> $username.content
+echo $ssh_key > $username.temp/$username.ssh
+echo $ssh_key >> $username.temp/$username.sh
+echo $ssh_key >> $username.temp/$username.content
 fi
 echo -e "\e[1;31mGenerating the mail content\e[0m"
-IFS=$'\n' read -ra arr -d '' < $username.content
+IFS=$'\n' read -ra arr -d '' < $username.temp/$username.content
 source scripts/mail_template/mail_template.html "${arr[@]}"
-rm -rf $username.content
+rm -rf $username.temp/$username.content
