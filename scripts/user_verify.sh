@@ -1,7 +1,12 @@
 #!/bin/bash
 #This script checks the existing and new users information and execute the tasks based upon the conditions.This script will create the json files and validate tje syntax also.
 rm -rf data_bags/private_keys/ops_users_temp.json
-rm -rf $username.temp/$username.html
+rm -rf $username.html
+echo $username > $username.sh
+echo $fullname >> $username.sh
+echo $group >> $username.sh
+echo $ssh_key > $username.ssh
+echo $ssh_key >> $username.sh
 validation_failure () {
 grep -wv "$email"  data/emails.sh > data/emails.sh.new && mv data/emails.sh.new data/emails.sh
 rm -rf data_bags/users/$username.json
@@ -9,9 +14,9 @@ rm -rf data_bags/private_keys/$username.yaml
 }
 echo "###########################################################"
 echo -e "\e[1;31mCreating the users json file\e[0m"
-IFS=$'\n' read -ra arr -d '' < $username.temp/$username.sh
+IFS=$'\n' read -ra arr -d '' < $username.sh
 source scripts/test_user_add.sh "${arr[@]}"
-rm -rf $username.temp/$username.sh
+rm -rf $username.sh
 echo "##########################################################"
 echo -e "\e[1;32mValidating the user json file syntax\e[0m"
 jsonlint data_bags/users/$username.json
@@ -23,11 +28,11 @@ validation_failure
 exit 1
 fi
 private_key_json () {
-echo $username > $username.temp/$username.private
-cat $username.temp/$username.ssh | md5sum > $username.temp/$username.md5
-cut -d ' ' -f1 < $username.temp/$username.md5 >> $username.temp/$username.private
-rm -rf $username.temp/$username.md5
-cat $username.temp/$username.ssh >> $username.temp/$username.private
+echo $username > $username.private
+cat $username.ssh | md5sum > $username.md5
+cut -d ' ' -f1 < $username.md5 >> $username.private
+rm -rf $username.md5
+cat $username.ssh >> $username.private
 }
 private_key_json
 ops_user_update () {
@@ -55,9 +60,9 @@ fi
 }
 echo "###########################################################"
 echo -e "\e[1;31mCreating the user private key yaml file syntax\e[0m"
-IFS=$'\n' read -ra lines -d '' < $username.temp/$username.private
+IFS=$'\n' read -ra lines -d '' < $username.private
 source scripts/test_user_yaml.sh "${lines[@]}"
-rm -rf $username.temp/$username.private $username.temp/$username.ssh
+rm -rf $username.private $username.ssh
 echo -e "\e[1;32mValidating the  user private key yaml file syntax\e[0m"
 yaml-lint data/$username.yaml
 if [ $? -eq 0 ]; then
