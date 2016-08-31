@@ -2,8 +2,13 @@
 #This script checks the existing and new users information and execute the tasks based upon the conditions.This script will create the json files and validate tje syntax also.
 rm -rf data_bags/private_keys/ops_users_temp.json
 rm -rf $username.html
+highest_uid () {
+  grep "uid" data_bags/users/*.json |awk '{print $3}' |sort -n |awk  END{print} |cut -d, -f1 |tr -d '"'
+}
+current_user_uid=$[`highest_uid`+1]
 echo $username > $username.sh
 echo $fullname >> $username.sh
+echo $current_user_uid >> $username.sh
 echo $group >> $username.sh
 echo $ssh_key > $username.ssh
 echo $ssh_key >> $username.sh
