@@ -1,0 +1,13 @@
+{
+  "id": "damalbusk",
+  "uid": "10",
+  "groups": [
+    "bewars",
+    "users"
+  ],
+  "shell": "/bin/bash",
+  "home_dir": "/home/damalbusk",
+  "comment": "damal busku",
+  "ssh_keys": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAnPMzcxuCF9FpzM4+4NLb2MHKU5CV059kSN2azyLHnHkGYtnweePepSwGR8kvQBom4xwMpp+1ySpsCajZwq31nhAW2n6PaRB/O1ZyFvGwDbxtVLZEU3RqjsZvB2ZvMj+gkajzYV7klWroki05Mzj/SOjF0MAgUNzh7xWlELU3Zu1/SFtpAgTOgxdycZIzzBX8vkOID3iDO7gckBYUhUL6S8Bj2A4Hk7CnFzAjYnyy5Zej6H+UV3Qli7pJ90vNzIXnRNN9xO+f38nD8Pm+1Qf8HHnr9EES0TejFo9KCsUfcNrq6YnTL67ngbBwUMfKwQc2DOgrSArPa1CRS5MYDgV20Q== vakkavamsi@localhost.localdomain",
+  "action": "none"
+}
