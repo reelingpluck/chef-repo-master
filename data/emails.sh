@@ -24,3 +24,4 @@ majnu:nani@itaas.com
 vvarma:viranchi.varma@itaas.com
 tarunbhaskar:tarun@itaas.com
 skylanovea:skyla@itaas.com
+trumpusa:makeamericagreat@itaas.com
