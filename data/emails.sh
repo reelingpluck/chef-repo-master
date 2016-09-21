@@ -20,3 +20,4 @@ abc:abc@itaas.com
 kriti:kriti@itaas.com
 taken:taken@itaas.com
 damalbusk:damal@itaas.com
+majnu:nani@itaas.com
