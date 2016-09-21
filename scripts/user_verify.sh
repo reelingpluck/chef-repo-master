@@ -1,7 +1,6 @@
 #!/bin/bash
 #This script checks the existing and new users information and execute the tasks based upon the conditions.This script will create the json files and validate tje syntax also.
 rm -rf data_bags/private_keys/ops_users_temp.json
-rm -rf $username.html
 highest_uid () {
   grep "uid" data_bags/users/*.json |awk '{print $3}' |sort -n |awk  END{print} |cut -d, -f1 |tr -d '"'
 }

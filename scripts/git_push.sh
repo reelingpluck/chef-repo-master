@@ -2,7 +2,6 @@
 echo -e "\e[1;31mPushing the json files to git repo\e[0m"
 git checkout test
 git status
-git rm $username.html
 git add .
 git commit -m "Uploading the users and private_keys json files of user $username"
 git pull origin test

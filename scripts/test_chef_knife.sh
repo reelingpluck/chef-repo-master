@@ -18,6 +18,9 @@ knife vault show private_keys ops_users_temp | grep -A 3 $username >> data/mail_
 if [ -f data_bags/users/$username.json ]; then
 echo -e "\e[1;31m Creating the user data bag item for $username\e[0m"
 knife data bag from file users data_bags/users/$username.json
+if [ $? -eq 1 ]; then
+exit 1
+fi
 else
 echo -e "\e[1;31mUsers json file is not found, please recheck\e[0m"
 exit 1
@@ -26,6 +29,9 @@ fi
 if [ -f data_bags/private_keys/ops_users_temp.json ]; then
 echo -e "\e[1;31m Updating the ops_users file for user $username\e[0m"
 knife vault update private_keys ops_users_temp -A ngupta -M client -S "os:linux" -j data_bags/private_keys/ops_users_temp.json
+if [ $? -eq 1 ]; then
+exit 1
+fi
 else
 echo -e "\e[1;31mPrivate_key json file is not found, please recheck\e[0m"
 exit 1
