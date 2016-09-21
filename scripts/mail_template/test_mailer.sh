@@ -49,11 +49,11 @@ else
 echo $fullname >> $username.content
 echo $email >> $username.content
 fi
-highest_uid () {
-  grep "uid" data_bags/users/*.json |awk '{print $3}' |sort -n |awk  END{print} |cut -d, -f1 |tr -d '"'
-}
-current_user_uid=$[`highest_uid`+1]
-echo $current_user_uid >> $username.sh
+#highest_uid () {
+ # grep "uid" data_bags/users/*.json |awk '{print $3}' |sort -n |awk  END{print} |cut -d, -f1 |tr -d '"'
+#}
+#current_user_uid=$[`highest_uid`+1]
+#echo $current_user_uid >> $username.sh
 if [ "$group" == "" ]; then
 echo -e "\033[1;31mPlease provide the groupname\e[0m"
 exit 1
