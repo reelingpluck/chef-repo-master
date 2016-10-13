@@ -8,7 +8,11 @@ current_user_uid=$[`highest_uid`+1]
 echo $username > $username.sh
 echo $fullname >> $username.sh
 echo $current_user_uid >> $username.sh
-echo $group >> $username.sh
+#echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' >> $username.sh
+group_change () {
+sh scripts/group_add.sh > scripts/test_user_add_bak.sh
+}
+group_change
 echo $ssh_key > $username.ssh
 echo $ssh_key >> $username.sh
 validation_failure () {
@@ -19,8 +23,9 @@ rm -rf data_bags/private_keys/$username.yaml
 echo "###########################################################"
 echo -e "\e[1;31mCreating the users json file\e[0m"
 IFS=$'\n' read -ra arr -d '' < $username.sh
-source scripts/test_user_add.sh "${arr[@]}"
+source scripts/test_user_add_bak.sh "${arr[@]}"
 rm -rf $username.sh
+rm -rf scripts/test_user_add_bak.sh
 echo "##########################################################"
 echo -e "\e[1;32mValidating the user json file syntax\e[0m"
 jsonlint data_bags/users/$username.json
@@ -33,9 +38,10 @@ exit 1
 fi
 private_key_json () {
 echo $username > $username.private
-cat $username.ssh | md5sum > $username.md5
-cut -d ' ' -f1 < $username.md5 >> $username.private
-rm -rf $username.md5
+mkpasswd -m sha-512 $password >> $username.private
+#cat $username.ssh | md5sum > $username.md5
+#cut -d ' ' -f1 < $username.md5 >> $username.private
+#rm -rf $username.md5
 cat $username.ssh >> $username.private
 }
 private_key_json

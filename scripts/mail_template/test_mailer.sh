@@ -58,7 +58,7 @@ if [ "$group" == "" ]; then
 echo -e "\033[1;31mPlease provide the groupname\e[0m"
 exit 1
 else
-echo $group >> $username.content
+echo $group  >> $username.content
 fi
 if [ "$ssh_key" == "" ]; then
 echo -e "\033[1;31mPlease provide the ssh_key\e[0m"
@@ -66,6 +66,7 @@ exit 1
 else
 echo $ssh_key >> $username.content
 fi
+echo $password >> $username.content
 echo -e "\e[1;31mGenerating the mail content\e[0m"
 IFS=$'\n' read -ra arr -d '' < $username.content
 source scripts/mail_template/mail_template.html "${arr[@]}"

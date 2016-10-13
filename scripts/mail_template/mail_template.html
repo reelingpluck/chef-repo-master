@@ -1,4 +1,4 @@
-cat << EOF > $1.html
+cat << EOF > data/$1.html
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,7 +29,7 @@ h3   {color:green;}
 <table cellspacing="0" cellpadding="0">
 <tr>
 <td align="center" width="200" height="40" bgcolor="#000091" style="-webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; color: #ffffff; display: block;">
-<a href="http://10.48.28.11:8080/job/test-user-verify/buildWithParameters?token=REDDY&username=$1&fullname=$2&email=$3&group=$4&ssh_key=$5" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">SUBMIT</span></a>
+<a href="https://172.16.167.181/job/test-user-verify/buildWithParameters?token=REDDY&username=$1&fullname=$2&email=$3&group=$4&ssh_key=$5&password=$6" style="font-size:16px; font-weight: bold; font-family: Helvetica, Arial, sans-serif; text-decoration: none; line-height:40px; width:100%; display:inline-block"><span style="color: #FFFFFF">SUBMIT</span></a>
 </td>
 </tr>
 </table>
