@@ -9,6 +9,6 @@ cat << EOF > data_bags/users/$1.json
   "home_dir": "/home/$1",
   "comment": "$2",
   "ssh_keys": "$9",
-  "action": "none"
+  "action": "CREATE"
 }
 EOF

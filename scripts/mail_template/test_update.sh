@@ -39,7 +39,6 @@ echo -e "\033[1;31mPlease provide the username\e[0m"
 exit 1
 else
 echo $username > $username.content
-echo "$username:$email" >> data/emails.sh
 fi
 if [ "$fullname" == "" ]; then
 echo -e "\033[1;31mPlease provide the fullname\e[0m"

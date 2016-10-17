@@ -8,7 +8,6 @@ current_user_uid=$[`highest_uid`+1]
 echo $username > $username.sh
 echo $fullname >> $username.sh
 echo $current_user_uid >> $username.sh
-echo $ACTION >> $username.sh
 echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' >> $username.sh
 group_change () {
 i=`echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' | wc -l`
@@ -58,19 +57,19 @@ yaml2json data/ops_users_new.yaml > data_bags/private_keys/ops_users.json
 jsonlint data_bags/private_keys/ops_users.json > /dev/null && grep "$username" data_bags/private_keys/ops_users.json > /dev/null
 if [ $? -eq 0 ]; then
 echo -e "\e[1;32mops_users file is successfully updated and please check the contents of the $fullname\e[0m"
-jsonlint data_bags/users/$username.json
 echo "###########################################"
 cat data/$username.yaml
 rm -rf data/$username.yaml
 rm -rf data/ops_users_new.yaml
 else
 echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
-rm -rf data/ops_users_new.yaml
+#rm -rf data/ops_users_new.yaml
+cp -rf data/ops_users_bkp.json data_bags/private_keys/ops_users.json
 exit 1
 fi
 else
 echo -e "\e[1;31mFile is not in valid yaml format, please check\e[0m"
-rm -rf data/ops_users_new.yaml
+#rm -rf data/ops_users_new.yaml
 exit 1
 fi
 }
