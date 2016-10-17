@@ -54,7 +54,7 @@ fi
 #echo $current_user_uid >> $username.sh
 if [ "$group" != "" ];then
 i=`echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' | wc -l`
-if [ $i > 5 ];then
+if [ $i -ge 5 ];then
 echo -e "\e[1;31mPlease provide five or below group names\e[0m"
 exit 1
 else
