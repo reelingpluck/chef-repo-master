@@ -63,13 +63,13 @@ rm -rf data/$username.yaml
 rm -rf data/ops_users_new.yaml
 else
 echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
-#rm -rf data/ops_users_new.yaml
+rm -rf data/ops_users_new.yaml
 cp -rf data/ops_users_bkp.json data_bags/private_keys/ops_users.json
 exit 1
 fi
 else
 echo -e "\e[1;31mFile is not in valid yaml format, please check\e[0m"
-#rm -rf data/ops_users_new.yaml
+rm -rf data/ops_users_new.yaml
 exit 1
 fi
 }
