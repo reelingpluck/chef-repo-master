@@ -49,6 +49,7 @@ private_key_json
 ops_user_update () {
 json2yaml data_bags/private_keys/ops_users.json > data/ops_users_new.yaml
 cat data/$username.yaml >> data/ops_users_new.yaml
+sed -i '/^$/d' data/ops_users_new.yaml
 yaml-lint data/ops_users_new.yaml
 if [ $? -eq 0 ]; then
 cp data_bags/private_keys/ops_users.json data/ops_users_bkp.json && rm -rf data_bags/private_keys/ops_users.json
