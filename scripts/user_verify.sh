@@ -1,6 +1,6 @@
 #!/bin/bash
 #This script checks the existing and new users information and execute the tasks based upon the conditions.This script will create the json files and validate tje syntax also.
-rm -rf data_bags/private_keys/ops_users_temp.json
+rm -rf data_bags/private_keys/data/ops_users_bkp.json
 highest_uid () {
   grep "uid" data_bags/users/*.json |awk '{print $3}' |sort -n |awk  END{print} |cut -d, -f1 |tr -d '"'
 }
@@ -8,7 +8,13 @@ current_user_uid=$[`highest_uid`+1]
 echo $username > $username.sh
 echo $fullname >> $username.sh
 echo $current_user_uid >> $username.sh
-echo $group >> $username.sh
+echo $ACTION >> $username.sh
+echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' >> $username.sh
+group_change () {
+i=`echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' | wc -l`
+sh scripts/group_add.sh $i > scripts/test_user_add_bak.sh
+}
+group_change
 echo $ssh_key > $username.ssh
 echo $ssh_key >> $username.sh
 validation_failure () {
@@ -19,8 +25,9 @@ rm -rf data_bags/private_keys/$username.yaml
 echo "###########################################################"
 echo -e "\e[1;31mCreating the users json file\e[0m"
 IFS=$'\n' read -ra arr -d '' < $username.sh
-source scripts/test_user_add.sh "${arr[@]}"
+source scripts/test_user_add_bak.sh "${arr[@]}"
 rm -rf $username.sh
+rm -rf scripts/test_user_add_bak.sh
 echo "##########################################################"
 echo -e "\e[1;32mValidating the user json file syntax\e[0m"
 jsonlint data_bags/users/$username.json
@@ -33,32 +40,37 @@ exit 1
 fi
 private_key_json () {
 echo $username > $username.private
-cat $username.ssh | md5sum > $username.md5
-cut -d ' ' -f1 < $username.md5 >> $username.private
-rm -rf $username.md5
+mkpasswd -m sha-512 $password >> $username.private
+#cat $username.ssh | md5sum > $username.md5
+#cut -d ' ' -f1 < $username.md5 >> $username.private
+#rm -rf $username.md5
 cat $username.ssh >> $username.private
 }
 private_key_json
 ops_user_update () {
-cat data/$username.yaml >> data/ops_users_new.yaml 
+json2yaml data_bags/private_keys/ops_users.json > data/ops_users_new.yaml
+cat data/$username.yaml >> data/ops_users_new.yaml
 yaml-lint data/ops_users_new.yaml
 if [ $? -eq 0 ]; then
 cp data_bags/private_keys/ops_users.json data/ops_users_bkp.json && rm -rf data_bags/private_keys/ops_users.json
 yaml2json data/ops_users_new.yaml > data_bags/private_keys/ops_users.json
-cp data_bags/private_keys/ops_users.json data_bags/private_keys/ops_users_temp.json && sed -i 's/ops_users/ops_users_temp/g' data_bags/private_keys/ops_users_temp.json
-jsonlint data_bags/private_keys/ops_users.json > /dev/null
+#cp data_bags/private_keys/ops_users.json data_bags/private_keys/ops_users_temp.json && sed -i 's/ops_users/ops_users_temp/g' data_bags/private_keys/ops_users_temp.json
+jsonlint data_bags/private_keys/ops_users.json > /dev/null && grep "$username" data_bags/private_keys/ops_users.json > /dev/null
 if [ $? -eq 0 ]; then
 echo -e "\e[1;32mops_users file is successfully updated and please check the contents of the $fullname\e[0m"
 jsonlint data_bags/users/$username.json
 echo "###########################################"
 cat data/$username.yaml
 rm -rf data/$username.yaml
+rm -rf data/ops_users_new.yaml
 else
 echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
+rm -rf data/ops_users_new.yaml
 exit 1
 fi
 else
 echo -e "\e[1;31mFile is not in valid yaml format, please check\e[0m"
+rm -rf data/ops_users_new.yaml
 exit 1
 fi
 }

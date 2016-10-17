@@ -6,6 +6,7 @@ echo -e "Your Fullname is \e[1;33m$fullname\e[0m"
 echo  -e "Your emailid is \e[1;32m$email\e[0m"
 echo  -e "Your group name is \e[1;36m$group\e[0m"
 echo  -e "Your ssh_key is \e[1;34m$ssh_key\e[0m"
+echo  -e "Action Item is  \e[1;34m$ACTION\e[0m"
 echo "#######################################################################"
 #This verify_email section will map the users name with mail id's to avoid the duplicate entries in future.
 verify_email () {
@@ -31,6 +32,8 @@ grep $email data/emails.sh > /dev/null
 if [ $? -eq 0 ]; then
 echo -e "\e[1;31mMailid $email is already exists with the $current_user\e[0m"
 exit 1
+else
+echo "$username:$email" >> data/emails.sh
 fi
 if [ "$username" == "" ]; then
 echo -e "\033[1;31mPlease provide the username\e[0m"
@@ -57,6 +60,11 @@ fi
 if [ "$group" == "" ]; then
 echo -e "\033[1;31mPlease provide the groupname\e[0m"
 exit 1
+fi
+i=`echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' | wc -l`
+if [ $i > 5];then
+echo -e "\e[1;31mPlease provide five or below group names\e[0m"
+exit 1
 else
 echo $group  >> $username.content
 fi
@@ -67,6 +75,7 @@ else
 echo $ssh_key >> $username.content
 fi
 echo $password >> $username.content
+echo $ACTION >> $username.content
 echo -e "\e[1;31mGenerating the mail content\e[0m"
 IFS=$'\n' read -ra arr -d '' < $username.content
 source scripts/mail_template/mail_template.html "${arr[@]}"
