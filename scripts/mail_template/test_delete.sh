@@ -37,9 +37,6 @@ fi
 if [ "$username" == "" ]; then
 echo -e "\033[1;31mPlease provide the username\e[0m"
 exit 1
-elif [ -f data_bags/users/$username.json ]; then
-echo -e "\e[1;31mUsers Json file is exists\e[0m"
-exit 1
 else
 echo $username > $username.content
 echo "$username:$email" >> data/emails.sh
