@@ -26,3 +26,5 @@ tarunbhaskar:tarun@itaas.com
 skylanovea:skyla@itaas.com
 trumpusa:makeamericagreat@itaas.com
 yadav:yadav@itaas.com
+jlawrence:jlo@itaas.com
+jlawrence:jlo@itaas.com
