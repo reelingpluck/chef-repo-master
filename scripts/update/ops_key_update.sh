@@ -1,8 +1,3 @@
-echo "username"
-read username
-echo "ssh_key"
-ssh_key="ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAnh5Vfgbb0bXfeGaKegtFt/slrBBN/zTynVQ4Bk+4CJznyQGhtEpzMA7wHatH2kYxcDV8YWw/4F7Bq/Fng4saMY/8pLS2f8nruzbfzKypIa4E/Cyy6GnNya8Y6mytsN9o3IPzv/P6dYVCaJbTGmZtM6A83Dubq1SQmZtmchhyGp48qbm7f2K+YzNnHeiuC2e95ZERLu9VmxHIPu2BbLgSgYiSn34Gi74/nvuMHCTahcHqzlEjrjRfoajEmNYJHlYGazxQ9slgfQ2cVb+yBHtNHcvpHCnqnAdSKmHq9OWLapn2E1DWGAGJYOThfX2XN0DyiZ4DS/H/sqO1GImDerZ70w== srinivas@chef-server"
-
 ops_user_update () {
 cat data/$username.yaml >> back_up/ops_users_new.yaml
 sed -i '/^$/d' back_up/ops_users_new.yaml

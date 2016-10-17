@@ -1,8 +1,3 @@
-echo "username"
-read username
-echo "password"
-read password
-
 ops_user_update () {
 cat data/$username.yaml >> back_up/ops_users_new.yaml
 sed -i '/^$/d' back_up/ops_users_new.yaml
