@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "#######################################################################"
-echo  -e "\e[1;31myou requested to update your content\e[0m"
+echo  -e "\e[1;31myou requested to delete your content\e[0m"
 echo  -e "Your username is \e[1;34m$username\e[0m"
 #echo -e "Your Fullname is \e[1;33m$fullname\e[0m"
 #echo  -e "Your emailid is \e[1;32m$email\e[0m"
@@ -56,26 +56,7 @@ fi
 #}
 #current_user_uid=$[`highest_uid`+1]
 #echo $current_user_uid >> $username.sh
-if [ "$group" == '' ] && [ "$password" == '' ] && [ "$ssh_key" == '' ]
-then
-echo -e "\e[1;31mPlease specify atleast one option(group,ssh_key or password) to update\e[0m"
-exit 1
-else
-i=`echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' | wc -l`
-if [ $i > 5];then
-echo -e "\e[1;31mPlease provide five or below group names\e[0m"
-exit 1
-else
-echo $group  >> $username.content
-fi
-for var in group password ssh_key
-do
-if [ "${!var}" != '' ]
-then 
-echo "going to update the $var contents"
-fi
-done
-fi
+echo $group >> $username.content
 echo $ssh_key >> $username.content
 echo $password >> $username.content
 echo $ACTION >> $username.content
