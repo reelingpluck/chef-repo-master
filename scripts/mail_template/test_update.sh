@@ -53,17 +53,19 @@ fi
 #}
 #current_user_uid=$[`highest_uid`+1]
 #echo $current_user_uid >> $username.sh
-if [ "$group" == '' ] && [ "$password" == '' ] && [ "$ssh_key" == '' ]
-then
-echo -e "\e[1;31mPlease specify atleast one option(group,ssh_key or password) to update\e[0m"
-exit 1
-else
+if [ "$group" != "" ];then
 i=`echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' | wc -l`
 if [ $i > 5];then
 echo -e "\e[1;31mPlease provide five or below group names\e[0m"
 exit 1
 else
 echo $group  >> $username.content
+fi
+fi
+if [ "$group" == '' ] && [ "$password" == '' ] && [ "$ssh_key" == '' ]
+then
+echo -e "\e[1;31mPlease specify atleast one option(group,ssh_key or password) to update\e[0m"
+exit 1
 fi
 for var in group password ssh_key
 do
@@ -72,7 +74,7 @@ then
 echo "going to update the $var contents"
 fi
 done
-fi
+
 echo $ssh_key >> $username.content
 echo $password >> $username.content
 echo $ACTION >> $username.content
