@@ -7,6 +7,14 @@ sed -n '/{/,/],/p' back_up/$username.json.bak > data_bags/users/$username.json
 sed -i '$d' data_bags/users/$username.json
 tail -n 1 data_bags/users/$username.json >  last_line
 echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' > $username.groups
+while IFS= read -r line
+do
+    grep $line data_bags/users/$username.json > /dev/null
+    if [ $? -eq 0 ]; then
+    echo "$line is already existed in your groups list so removing"
+    sed -i '/'`echo $line`'/d' $username.groups
+    fi
+done < $username.groups
 sed -i '$d' data_bags/users/$username.json
 sed  -e "s/\(.*\)/\"\1\",/" -e 's/^/   /' < $username.groups > $username.groups.bak && rm -rf $username.groups
 cat $username.groups.bak >> data_bags/users/$username.json

@@ -32,6 +32,8 @@ grep $email data/emails.sh > /dev/null
 if [ $? -eq 0 ]; then
 echo -e "\e[1;31mMailid $email is already exists with the $current_user\e[0m"
 exit 1
+else
+echo "$username:$email" >> data/emails.sh
 fi
 if [ "$username" == "" ]; then
 echo -e "\033[1;31mPlease provide the username\e[0m"
