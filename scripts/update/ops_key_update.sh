@@ -44,7 +44,7 @@ echo $ssh_key >> $username.private
 sed -i 's/,//g' $username.private
 echo -e "\e[1;31mCreating the user private key yaml file syntax\e[0m"
 IFS=$'\n' read -ra lines -d '' < $username.private
-source update/test_user_yaml.sh "${lines[@]}"
+source scripts/update/test_user_yaml.sh "${lines[@]}"
 rm -rf $username.private $username.ops_key
 echo -e "\e[1;32mValidating the  user private key yaml file syntax\e[0m"
 yaml-lint data/$username.yaml

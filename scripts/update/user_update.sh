@@ -83,7 +83,7 @@ fi
 fi
 
 if [ "$ssh_key" != "" ];then
-sh update/ops_key_update.sh
+sh scripts/update/ops_key_update.sh
 fi
 
 
@@ -100,5 +100,5 @@ rm -rf data_bags/users/$username.json
 cp -rf back_up/$username.json.bak data_bags/users/$username.json
 exit 1
 fi
-sh update/password_update.sh
+sh scripts/update/password_update.sh
 fi

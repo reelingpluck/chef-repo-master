@@ -43,7 +43,7 @@ mkpasswd -m sha-512 $password >> $username.private
 grep private_key $username.ops_key | cut -d ':' -f2 >> $username.private
 echo -e "\e[1;31mCreating the user private key yaml file syntax\e[0m"
 IFS=$'\n' read -ra lines -d '' < $username.private
-source update/test_password_yaml.sh "${lines[@]}"
+source scripts/update/test_password_yaml.sh "${lines[@]}"
 rm -rf $username.private $username.ops_key
 echo -e "\e[1;32mValidating the  user private key yaml file syntax\e[0m"
 yaml-lint data/$username.yaml
