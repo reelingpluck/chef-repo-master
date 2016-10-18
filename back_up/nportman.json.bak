@@ -1,0 +1,13 @@
+{
+  "id": "nportman",
+  "uid": "10",
+  "groups": [
+ "movies",
+    "users"
+  ],
+  "shell": "/bin/bash",
+  "home_dir": "/home/nportman",
+  "comment": "natalie portman",
+  "ssh_keys": "movies",
+  "action": "CREATE"
+}
