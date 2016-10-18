@@ -18,7 +18,11 @@ knife vault show private_keys_test ops_users | grep -A 3 $username >> data/mail_
 if [ -f data_bags/users/$username.json ]; then
 echo -e "\e[1;31m Creating the user data bag item for $username\e[0m"
 knife data bag from file users data_bags/users/$username.json
-if [ $? -ne 0 ]; then
+if [ $? -eq 0 ]; then
+echo -e "\e[1;31m Please check the content of  user data bag item for $username\e[0m"
+knife data bag show users $username
+else
+echo -e "\e[1;31m Facing issue in creating the data bag item for user, please check\e[0m"
 exit 1
 fi
 else
@@ -29,7 +33,11 @@ fi
 if [ -f data_bags/private_keys/ops_users.json ]; then
 echo -e "\e[1;31m Updating the ops_users file for user $username\e[0m"
 knife vault update private_keys_test ops_users -A ngupta -M client -S "os:linux" -j data_bags/private_keys/ops_users.json
-if [ $? -ne 0 ]; then
+if [ $? -eq 0 ]; then
+echo -e "\e[1;31m Please check the content of  ops_user data bag item for $username\e[0m"
+knife  vault show private_keys_test ops_users | sed -n '/'`echo $username`'n/,/private_key/p'
+else
+echo -e "\e[1;31m Facing issue in creating the data bag item for user, please check\e[0m"
 exit 1
 fi
 else
