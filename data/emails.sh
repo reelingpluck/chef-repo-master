@@ -1,4 +1,3 @@
-#list of user email id's
 anu:anu@itaas.dimensiondata.com
 vanaja:vanaja@itaas.com
 lakshmi205:lakshmi@itaas.com
@@ -25,3 +24,7 @@ vvarma:viranchi.varma@itaas.com
 tarunbhaskar:tarun@itaas.com
 skylanovea:skyla@itaas.com
 trumpusa:makeamericagreat@itaas.com
+yadav:yadav@itaas.com
+jlawrence:jlo@itaas.com
+jlawrence:jlo@itaas.com
+nportman:portman@itaas.com
