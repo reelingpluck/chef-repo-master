@@ -69,5 +69,10 @@
     "passwordclear": "",
     "passwordmd5": "6f7c956969b169e6e84605de04e4c3d1",
     "private_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA0R3uisPM4BS12SHOCUeiKRtAR0kFpJ1n09yUIdaSpviZX hFz Oy37L75uIqFIv6AeDtN7s0FRzixHo2i8Wy aRRXll/A19nNB5Hv aKdNSm7oPHUWzhWciDO8B79Ic/SOp6Hn4rOEScSo8wFiNlRBYP6t4J7Nz0z2kdmMx VAIQZMsNAV7HQaJlufJwIvQhfPfQ0K1bWTtUH7fbzmHoy5 DPEMJRUeH9FFluOMs6b8LnvUfh1Bk72L68ttEREvMHdt1ep229J4wRyv9mutGXtx12gTPSQtqEw0OrH2mmVy5THoA s7b hW5UKY2/jsys7txy7e9xt kVViM2/mYXw== root@chef-server"
+  },
+  "nportman": {
+    "passwordclear": "",
+    "passwordmd5": "$6$QW5YjBuZ7o46jYmc$nUrPgv0rmqoCYLDRKMbxb2udrw2sS4gDM0hquynzjyV5/TmteiQs8RyNsv4OWvPLF.EqJPo30kb.xGxga1ItJ/",
+    "private_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA0R3uisPM4BS12SHOCUeiKRtAR0kFpJ1n09yUIdaSpviZX+hFz+Oy37L75uIqFIv6AeDtN7s0FRzixHo2i8Wy+aRRXll/A19nNB5Hv+aKdNSm7oPHUWzhWciDO8B79Ic/SOp6Hn4rOEScSo8wFiNlRBYP6t4J7Nz0z2kdmMx+VAIQZMsNAV7HQaJlufJwIvQhfPfQ0K1bWTtUH7fbzmHoy5+DPEMJRUeH9FFluOMs6b8LnvUfh1Bk72L68ttEREvMHdt1ep229J4wRyv9mutGXtx12gTPSQtqEw0OrH2mmVy5THoA+s7b+hW5UKY2/jsys7txy7e9xt+kVViM2/mYXw== root@chef-server"
   }
 }
