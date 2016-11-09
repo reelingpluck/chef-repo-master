@@ -1,5 +1,0 @@
-cat << EOF > $1.key_temp
-  "ssh_keys": "$2",
-  "action": "update"
-}
-EOF

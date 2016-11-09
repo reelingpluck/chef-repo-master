@@ -1,0 +1,14 @@
+i=`echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' | wc -l`
+#a=`expr 4 + "$i"`
+case $i in
+   1) sed   '/group/a \ "$5",' scripts/templates/usr_mgmt_add.template
+   ;;
+   2) sed   '/group/a \ "$5",\n"$6",' scripts/templates/usr_mgmt_add.template
+   ;;
+   3) sed    '/group/a \ "$5",\n"$6",\n"$7",'  scripts/templates/usr_mgmt_add.template
+   ;;
+   4) sed    '/group/a \ "$5",\n"$6",\n"$7",\n "$8",' scripts/templates/usr_mgmt_add.template
+   ;;
+   5) sed    '/group/a \ "$5",\n"$6",\n"$7",\n"$8",\n"$9",' scripts/templates/usr_mgmt_add.template
+   ;;
+esac

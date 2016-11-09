@@ -8,7 +8,7 @@ cat << EOF > data_bags/users/$1.json
   "shell": "/bin/bash",
   "home_dir": "/home/$1",
   "comment": "$2",
-  "ssh_keys": "$9",
-  "action": "CREATE"
+  "public_ssh_keys": "$4",
+  "action": "create"
 }
 EOF

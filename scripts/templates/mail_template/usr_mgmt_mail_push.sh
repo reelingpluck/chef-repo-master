@@ -1,11 +1,11 @@
 #echo "############################################"
 #echo -e "\e[1;31mPushing the json files to git repo\e[0m"
-git checkout test
+git checkout pre_develop
 git status
-git add .
+git add data/emails.sh
 git commit -m "Uploading the temp files of user $username"
-git pull origin test
-git push origin test
+git pull origin pre_develop
+git push origin pre_develop
 
 if [ "$?" -eq 0 ]; then
 echo -e "\e[1;31mFiles are succesfully uploaded to git repo"

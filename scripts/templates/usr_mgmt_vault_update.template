@@ -1,0 +1,11 @@
+cat << EOF > back_up/$1.vaultitem
+{
+ "$1": {
+    "passwordclear": "",
+    "passwordmd5": "$2",
+    "public_ssh_key": "$3"
+  }
+
+}
+EOF
+
