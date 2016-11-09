@@ -2,80 +2,80 @@
 echo "#######################################################################"
 echo  -e "\e[1;31mPlease check the details provided\e[0m"
 echo  -e "Your username is \e[1;34m$username\e[0m"
-echo  -e "Your fullname is \e[1;33m$fullname\e[0m"
-echo  -e "Your e-mail address is \e[1;32m$email\e[0m"
+echo -e "Your Fullname is \e[1;33m$fullname\e[0m"
+echo  -e "Your emailid is \e[1;32m$email\e[0m"
 echo  -e "Your group name is \e[1;36m$group\e[0m"
 echo  -e "Your ssh_key is \e[1;34m$ssh_key\e[0m"
 echo  -e "Action Item is  \e[1;34m$ACTION\e[0m"
 echo "#######################################################################"
-
-# Load common.sh for common used functions
-if [ -f scripts/mail_template/common.sh ]; then
-  source scripts/mail_template/common.sh
+#This verify_email section will map the users name with mail id's to avoid the duplicate entries in future.
+verify_email () {
+suffix=$( echo "$email" | cut -d '@' -f2 )
+if [[ "$suffix" == "itaas.com" || "$suffix" == "dimensiondata.com" || "$suffix" == "itaas.dimensiondata.com" ]]; then
+echo "You have provided the offical mail id"
 else
-  echo "Missing common.sh, exiting"
-  exit 1
+echo -e "\e[1;31myour maild is not in the correct format, Please provide your offical mail id\e[0m"
+exit 1
 fi
-
-if [ -z "$email" ]; then
-  echo -e "\033[1;31mPlease provide the email\e[0m"
-  exit 1
+}
+if [ "$email" == "" ]; then
+echo -e "\033[1;31mPlease provide the email\e[0m"
+exit 1
 fi
-
-echo -e "\e[1;31mVerifying the e-mail id\e[0m"
+echo -e "\e[1;31mVerifying the maild id\e[0m"
 verify_email
-
+get_user () {
+grep -w $email < data/emails.sh | cut -d ':' -f1
+}
 current_user=$( get_user )
 grep $email data/emails.sh > /dev/null
-
 if [ $? -eq 0 ]; then
-  echo -e "\e[1;31mMailid $email is already exists with the $current_user\e[0m"
-  exit 1
+echo -e "\e[1;31mMailid $email is already exists with the $current_user\e[0m"
+exit 1
 fi
-
-if [ -z "$username" ]; then
-  echo -e "\033[1;31mPlease provide the username\e[0m"
-  exit 1
+if [ "$username" == "" ]; then
+echo -e "\033[1;31mPlease provide the username\e[0m"
+exit 1
 elif [ -f data_bags/users/$username.json ]; then
-  echo -e "\e[1;31m$username.json already exists\e[0m"
-  exit 1
+echo -e "\e[1;31mFile already exists\e[0m"
+exit 1
 else
-  echo $username > $username.content
-  echo "$username:$email" >> data/emails.sh
+echo $username > $username.content
+echo "$username:$email" >> data/emails.sh
 fi
-
-if [ -z "$fullname" ]; then
-  echo -e "\033[1;31mPlease provide the fullname\e[0m"
-  exit 1
+if [ "$fullname" == "" ]; then
+echo -e "\033[1;31mPlease provide the fullname\e[0m"
+exit 1
 else
-  echo $fullname >> $username.content
-  echo $email >> $username.content
+echo $fullname >> $username.content
+echo $email >> $username.content
 fi
-
-if [ -z "$group" ]; then
-  echo -e "\033[1;31mPlease provide the groupname\e[0m"
-  exit 1
+#highest_uid () {
+ # grep "uid" data_bags/users/*.json |awk '{print $3}' |sort -n |awk  END{print} |cut -d, -f1 |tr -d '"'
+#}
+#current_user_uid=$[`highest_uid`+1]
+#echo $current_user_uid >> $username.sh
+if [ "$group" == "" ]; then
+echo -e "\033[1;31mPlease provide the groupname\e[0m"
+exit 1
 fi
-
-## TODO: Why are we limiting the user to 5 groups? ##
-i=`echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' | wc -l` 
+i=`echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' | wc -l`
 if [ $i -ge 5 ];then
-  echo -e "\e[1;31mPlease provide five or below group names\e[0m"
-  exit 1
+echo -e "\e[1;31mPlease provide five or below group names\e[0m"
+exit 1
 else
-  echo $group  >> $username.content
+echo $group  >> $username.content
 fi
-#################################################
-
-if [ -z "$ssh_key" ]; then
-  echo "NA" >> $username.content
+if [ "$ssh_key" == "" ]; then
+echo -e "\033[1;31mPlease provide the ssh_key\e[0m"
+exit 1
 else
-  echo $ssh_key >> $username.content
+echo $ssh_key >> $username.content
 fi
-if [ -z "$password" ]; then
-  echo "NA" >> $username.content
+if [ "$password" == "" ]; then
+echo "NA" >> $username.content
 else
-  echo $password >> $username.content
+echo $password >> $username.content
 fi
 echo $ACTION >> $username.content
 echo -e "\e[1;31mGenerating the mail content\e[0m"

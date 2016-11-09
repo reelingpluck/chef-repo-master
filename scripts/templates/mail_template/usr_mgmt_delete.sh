@@ -1,11 +1,11 @@
 #!/bin/bash
 echo "#######################################################################"
-echo  -e "\e[1;31myou requested to update your content\e[0m"
+echo  -e "\e[1;31myou requested to delete your content\e[0m"
 echo  -e "Your username is \e[1;34m$username\e[0m"
 #echo -e "Your Fullname is \e[1;33m$fullname\e[0m"
 #echo  -e "Your emailid is \e[1;32m$email\e[0m"
 #echo  -e "Your group name is \e[1;36m$group\e[0m"
-#echo  -e "Your public_ssh_key is \e[1;34m$public_ssh_key\e[0m"
+#echo  -e "Your ssh_key is \e[1;34m$ssh_key\e[0m"
 echo "#######################################################################"
 #This verify_email section will map the users name with mail id's to avoid the duplicate entries in future.
 verify_email () {
@@ -39,6 +39,7 @@ echo -e "\033[1;31mPlease provide the username\e[0m"
 exit 1
 else
 echo $username > $username.content
+echo "$username:$email" >> data/emails.sh
 fi
 if [ "$fullname" == "" ]; then
 echo -e "\033[1;31mPlease provide the fullname\e[0m"
@@ -52,40 +53,9 @@ fi
 #}
 #current_user_uid=$[`highest_uid`+1]
 #echo $current_user_uid >> $username.sh
-if [ "$group" != "" ];then
-i=`echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' | wc -l`
-if [ $i -ge 5 ];then
-echo -e "\e[1;31mPlease provide five or below group names\e[0m"
-exit 1
-fi
-fi
-if [ "$group" == '' ] && [ "$password" == '' ] && [ "$public_ssh_key" == '' ]
-then
-echo -e "\e[1;31mPlease specify atleast one option(group,public_ssh_key or password) to update\e[0m"
-exit 1
-fi
-for var in group password public_ssh_key
-do
-if [ "${!var}" != '' ]
-then 
-echo "going to update the $var contents"
-fi
-done
-if [ "$group" == "" ]; then
-echo "NA" >> $username.content
-else
 echo $group >> $username.content
-fi
-if [ "$public_ssh_key" == "" ]; then
-echo "NA" >> $username.content
-else
-echo $public_ssh_key >> $username.content
-fi
-if [ "$password" == "" ]; then
-echo "NA" >> $username.content
-else
+echo $ssh_key >> $username.content
 echo $password >> $username.content
-fi
 echo $ACTION >> $username.content
 echo -e "\e[1;31mGenerating the mail content\e[0m"
 IFS=$'\n' read -ra arr -d '' < $username.content

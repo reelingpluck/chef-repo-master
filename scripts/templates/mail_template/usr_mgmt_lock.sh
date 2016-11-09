@@ -53,23 +53,23 @@ fi
 #}
 #current_user_uid=$[`highest_uid`+1]
 #echo $current_user_uid >> $username.sh
-if [ -z "$group" ]; then
-  echo "NA" >> $username.content
+if [ "$group" == "" ]; then
+echo "NA" >> $username.content
 else
-  echo $group >> $username.content
+echo $group >> $username.content
 fi
-if [ -z "$ssh_key" ]; then
-  echo "NA" >> $username.content
+if [ "$ssh_key" == "" ]; then
+echo "NA" >> $username.content
 else
-  echo $ssh_key >> $username.content
+echo $ssh_key >> $username.content
 fi
-if [ -z "$password" ]; then
-  echo "NA" >> $username.content
+if [ "$password" == "" ]; then
+echo "NA" >> $username.content
 else
-  echo $password >> $username.content
+echo $password >> $username.content
 fi
 echo $ACTION >> $username.content
 echo -e "\e[1;31mGenerating the mail content\e[0m"
 IFS=$'\n' read -ra arr -d '' < $username.content
-source scripts/mail_template/mail_template.html "${arr[@]}"
+source scripts/templates/mail_template/mail_template.html "${arr[@]}"
 rm -rf $username.content

@@ -8,8 +8,8 @@ current_user_uid=$[`highest_uid`+1]
 echo $username > $username.sh
 echo $fullname >> $username.sh
 echo $current_user_uid >> $username.sh
-echo $public_ssh_key > $username.ssh
-echo $public_ssh_key >> $username.sh
+echo $ssh_key > $username.ssh
+echo $ssh_key >> $username.sh
 echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' >> $username.sh
 group_change () {
 #i=`echo $group | cut -d',' -f1-5 --output-delimiter=$'\n' | wc -l`
@@ -19,6 +19,7 @@ group_change
 validation_failure () {
 grep -wv "$email"  data/emails.sh > data/emails.sh.new && mv data/emails.sh.new data/emails.sh
 rm -rf data_bags/users/$username.json
+rm -rf data_bags/private_keys/$username.yaml
 }
 echo "###########################################################"
 echo -e "\e[1;31mCreating the users json file\e[0m"
@@ -30,18 +31,7 @@ echo "##########################################################"
 echo -e "\e[1;32mValidating the user json file syntax\e[0m"
 jsonlint data_bags/users/$username.json
 if [ $? -eq 0 ]; then
-echo -e "\e[1;32mCreating the databag items for the $username\e[0m"
-knife ssl fetch
-sleep 5
-knife data bag from file users data_bags/users/$username.json
-if [ $? -eq 0 ]; then
-echo -e "\e[1;32m Please check the content of  user data bag item for $username\e[0m"
-knife data bag show users $username
-else
-echo -e "\e[1;31m Facing issue in creating the data bag item for user, please check\e[0m"
-validation_failure
-exit 1
-fi
+echo -e "\e[1;32mGenerated users file is in correct json format\e[0m"
 else
 echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
 validation_failure
@@ -57,42 +47,45 @@ cat $username.ssh >> $username.private
 }
 private_key_json
 ops_user_update () {
-echo -e "\e[1;32mUpdating ops_users file for the user $fullname\e[0m"
-IFS=$'\n' read -ra arr -d '' < $username.private
-source scripts/templates/usr_mgmt_vault_update.template "${arr[@]}"
-rm -rf $username.private
-jsonlint back_up/$username.vaultitem
+json2yaml data_bags/private_keys/ops_users.json > data/ops_users_new.yaml
+cat data/$username.yaml >> data/ops_users_new.yaml
+sed -i '/^$/d' data/ops_users_new.yaml
+yaml-lint data/ops_users_new.yaml
 if [ $? -eq 0 ]; then
-echo -e "\e[1;32mGenerating the vault item for the $username\e[0m"
-knife vault update private_keys_develop ops_users -J back_up/$username.vaultitem
+cp data_bags/private_keys/ops_users.json data/ops_users.json.bkp && rm -rf data_bags/private_keys/ops_users.json
+yaml2json data/ops_users_new.yaml > data_bags/private_keys/ops_users.json
+#cp data_bags/private_keys/ops_users.json data_bags/private_keys/ops_users_temp.json && sed -i 's/ops_users/ops_users_temp/g' data_bags/private_keys/ops_users_temp.json
+jsonlint data_bags/private_keys/ops_users.json > /dev/null && grep "$username" data_bags/private_keys/ops_users.json > /dev/null
+if [ $? -eq 0 ]; then
+echo -e "\e[1;32mops_users file is successfully updated and please check the contents of the $fullname\e[0m"
+echo "###########################################"
+cat data/$username.yaml
+rm -rf data/$username.yaml
+rm -rf data/ops_users_new.yaml
 else
 echo -e "\e[1;31mFile is not in valid json format, please check\e[0m"
-validation_failure
+rm -rf data/ops_users_new.yaml
+cp -rf data/ops_users.json.bkp data_bags/private_keys/ops_users.json
 exit 1
 fi
-sleep 20
-echo "##########################################################"
-echo -e "\e[1;32mChecking the $username content in ops_users file\e[0m"
-knife vault show private_keys_develop ops_users > back_up/ops_users.json
-cat back_up/ops_users.json | grep $username > /dev/null
-if [ $? -eq 0 ]; then
-echo -e "\e[1;32m$username data is updated in ops_users file\e[0m"
-sed -n '/'`echo $username`'/,/public_ssh_key/p' back_up/ops_users.json
 else
-echo -e "\e[1;31mops_users file is not updated with $username content please check\e[0m"
-validation_failure
+echo -e "\e[1;31mFile is not in valid yaml format, please check\e[0m"
+rm -rf data/ops_users_new.yaml
 exit 1
 fi
 }
+echo "###########################################################"
+echo -e "\e[1;31mCreating the user private key yaml file syntax\e[0m"
+IFS=$'\n' read -ra lines -d '' < $username.private
+source scripts/templates/usr_mgmt_add_yaml.template "${lines[@]}"
+rm -rf $username.private $username.ssh
+echo -e "\e[1;32mValidating the  user private key yaml file syntax\e[0m"
+yaml-lint data/$username.yaml
+if [ $? -eq 0 ]; then
+echo -e "\e[1;32mGenerated users file is in correct yaml format\e[0m"
 ops_user_update
-
-
-
-
-
-
-
-
-
-
-
+else
+echo -e "\e[1;31mFile is not in valid yaml format, please check\e[0m"
+validation_failure
+exit 1
+fi

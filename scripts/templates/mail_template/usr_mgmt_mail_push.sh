@@ -2,7 +2,7 @@
 #echo -e "\e[1;31mPushing the json files to git repo\e[0m"
 git checkout pre_develop
 git status
-git add data/emails.sh
+git add .
 git commit -m "Uploading the temp files of user $username"
 git pull origin pre_develop
 git push origin pre_develop
